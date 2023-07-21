@@ -23,7 +23,7 @@ Scenario #1
 docker build -t chapter-1-scrnario-1-app . && docker run -p 80:80 chapter-1-scrnario-1-app
 ```
 
-Result: at 4096 rps, about 7-10% of requests fail bc of nginx not being able to handle thing.
+Result: at **4096** rps, about 7-10% of requests fail bc of nginx not being able to handle thing.
 
 Scenario #2
 
@@ -35,8 +35,8 @@ docker build -t chapter-1-scrnario-2-app . && docker run --ulimit nofile=65535:6
 ```
 
 Try 2:
-However, running w/o `--ulimit nofile=65535:65535` but increasing `worker_connections 65535;` yields good resuts at 4096. 
-At 16384 rps, even just increasing the worker connections get us a 2.35% failure rate. We also get 100+% CPU usage on one core. 
+However, running w/o `--ulimit nofile=65535:65535` but increasing `worker_connections 65535;` yields good resuts at **4096**. 
+At **16384** rps, even just increasing the worker connections get us a 2.35% failure rate. We also get 100+% CPU usage on one core. 
 
 Try 3: 
 Adding `use epoll;` to see what happens. Still the same limit. 

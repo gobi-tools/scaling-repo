@@ -11,7 +11,7 @@ export const options = {
     { duration: '30s', target: 1024 },
     { duration: '60s', target: 4096 }, // scenario 1 limit
     { duration: '60s', target: 8192 },
-    { duration: '60s', target: 16384 }, // secenario 2.1 limit (w/ just more worker connections) 
+    { duration: '60s', target: 16384 }, // secenario 2 limit (w/ just more worker connections) 
   ]
 }
 
