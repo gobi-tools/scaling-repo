@@ -16,9 +16,6 @@ while [ true ]; do
   echo $iteration $cpu_perc >> $CPU_FILE
   echo $iteration $mem_perc >> $MEM_FILE
   ((iteration++))
-
-  # wait for a number of seconds
-  # sleep 5
 done
 
 

@@ -1,0 +1,12 @@
+version: '3.2'
+services:
+  server:
+    container_name: my-server
+    build:
+      context: .
+      dockerfile: 'Dockerfile'
+    ports:
+      - 80:3000
+    cpus: "1.0"
+    mem_limit: 200m
+    restart: always
