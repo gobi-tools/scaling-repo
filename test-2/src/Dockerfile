@@ -2,12 +2,16 @@ FROM node:18-alpine
 
 WORKDIR /srv
 
+RUN npm install -g typescript
+RUN npm install -g ts-node
+
 COPY package.json .
 COPY package-lock.json .
+COPY tsconfig.json . 
 
-RUN npm install
+RUN npm i
 
-COPY server.js server.js
+COPY server.ts server.ts
 
 EXPOSE 3000
-CMD [ "npm", "run", "start" ]
+CMD [ "npx", "ts-node", "server.ts" ]
