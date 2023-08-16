@@ -30,6 +30,7 @@ router.post('/create', async (req, res) => {
   const value = Math.floor(Math.random() * 100) + 1; // random number between 1 and 100
   const entity = dataSource.manager.create(Result, { id, value });
   await dataSource.manager.save(entity);
+  console.log('created entity', id, value);
   res.status(200).json({ success: true, result: { id, value } });
 });
 
