@@ -34,11 +34,6 @@ router.post('/create', async (req, res) => {
   res.status(200).json({ success: true, result: { id, value } });
 });
 
-router.get('', async (req, res) => {
-  const result = await dataSource.manager.find(Result);
-  res.status(200).json({ success: true, result });
-});
-
 app.use(`/${DOMAIN}`, router);
 
 app.listen(PORT, async () => {

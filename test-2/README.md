@@ -26,16 +26,10 @@ Then you can build & run the project via `docker compose`
 docker-compose down -v && docker-compose up --build --remove-orphans
 ```
 
-To create new entries in the DB:
+To call the only endpoint in the server:
 
 ```bash
 curl --request POST http://localhost/server/create
-```
-
-and to get all entries in the DB
-
-```bash
-curl http://localhost/server
 ```
 
 To run the load test, edit `loadtest.js` to whichever `target` and `duration` you want, and then:
@@ -55,4 +49,4 @@ It will output:
 - P95 latency
 - Failure rate
 
-As well as a history of % CPU and % Memory usage.
+As well as a history of % CPU and % Memory usage for the App Server (`crud-server`) and Database (`crud-db`).
