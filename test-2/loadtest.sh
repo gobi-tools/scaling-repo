@@ -177,5 +177,4 @@ calc_average_data "mem" $DB_CONTAINER
 # Tear down
 ############################################
 
-prepare
 rm -rf load_test_result
