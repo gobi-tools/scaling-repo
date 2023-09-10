@@ -64,7 +64,7 @@ services:
       # allow Grafana access to host's time info (read only)
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
-      # copy Grafana aconfig files from host to container
+      # copy Grafana config files from host to container
       - ./grafana/grafana.ini:/etc/grafana/grafana.ini
       - ./grafana/provisioning:/etc/grafana/provisioning
       - ./grafana/data:/var/lib/grafana
