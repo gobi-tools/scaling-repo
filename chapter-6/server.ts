@@ -2,7 +2,6 @@ import express from 'express';
 import { metricsEndpoint, metricsMiddleware } from './monitoring';
 const app = express();
 const PORT = 3000;
-const DOMAIN = 'app-server';
 
 const router = express.Router();
 
@@ -17,7 +16,7 @@ router.get('/', async (req, res) => {
 
 router.get(`/metrics`, metricsEndpoint);
 
-app.use(`/${DOMAIN}`, router);
+app.use(`/`, router);
 
 app.listen(PORT, async () => {
   console.log(`App Server listening on port ${PORT}`);

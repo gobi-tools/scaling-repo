@@ -8,6 +8,6 @@ export const options = {
 }
 
 export default function () {
-  http.get('http://localhost/app-server');
+  http.get('http://localhost');
   sleep(1);
 }
