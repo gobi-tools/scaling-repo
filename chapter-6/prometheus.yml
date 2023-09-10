@@ -1,0 +1,13 @@
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+  - job_name: 'app-server'
+    static_configs:
+      - targets: ['app-server:3000']
+    metrics_path: app-server/metrics
+    scheme: http
+    
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['cadvisor:8080']  

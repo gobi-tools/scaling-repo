@@ -1,0 +1,62 @@
+version: '3.2'
+services:
+  app-server:
+    container_name: app-server
+    build:
+      context: .
+      dockerfile: 'Dockerfile'
+    ports:
+      - 80:3000
+    scale: 1
+    cpus: '1.0'
+    mem_limit: 200m
+    restart: always
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.47.1
+    # container_name: cadvisor
+    restart: always
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker:/var/lib/docker:ro
+      - /var/run/docker.sock:/var/run/docker.sock:rw
+    devices:
+      - /dev/kmsg:/dev/kmsg
+    ports:
+      - 8080:8080
+    depends_on:
+      - app-server
+  
+  prometheus:
+    # container_name: prometheus
+    image: prom/prometheus
+    restart: always
+    ports:
+      - '9090:9090'
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - app-server
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - '3005:3000'
+    depends_on:
+      - prometheus
+    environment:
+      - GF_LOG_LEVEL=error
+    restart: always
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/data:/var/lib/grafana
+    user: "1000"
