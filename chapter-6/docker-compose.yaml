@@ -14,7 +14,6 @@ services:
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.47.1
-    # container_name: cadvisor
     restart: always
     volumes:
       - /etc/localtime:/etc/localtime:ro
@@ -32,7 +31,6 @@ services:
       - app-server
   
   prometheus:
-    # container_name: prometheus
     image: prom/prometheus
     restart: always
     ports:
