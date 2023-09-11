@@ -18,6 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
+  "id": 2,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -83,8 +84,8 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 6,
+        "h": 9,
+        "w": 12,
         "x": 0,
         "y": 0
       },
@@ -183,9 +184,9 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 6,
-        "x": 6,
+        "h": 9,
+        "w": 12,
+        "x": 12,
         "y": 0
       },
       "id": 4,
@@ -208,7 +209,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "(container_memory_usage_bytes{name=\"app-server\"} / container_spec_memory_limit_bytes{name=\"app-server\"}) * 100",
+          "expr": "sum((container_memory_usage_bytes{name=\"app-server\"} / container_spec_memory_limit_bytes{name=\"app-server\"})) by (name) * 100",
           "instant": false,
           "legendFormat": "{{label_name}}",
           "range": true,
@@ -278,10 +279,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 6,
-        "x": 12,
-        "y": 0
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 9
       },
       "id": 5,
       "options": {
@@ -303,7 +304,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "rate(app_server_summary_request_duration_seconds_count[1m])",
+          "expr": "sum(rate(app_server_summary_request_duration_seconds_count[1m])) by (route)",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -373,10 +374,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 6,
-        "x": 18,
-        "y": 0
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 9
       },
       "id": 7,
       "options": {
@@ -398,151 +399,18 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "rate(app_server_summary_request_duration_seconds_sum[15s]) / rate(app_server_summary_request_duration_seconds_count[15s])\n",
+          "expr": "avg(app_server_summary_request_duration_seconds{quantile=\"0.9\"}) by (route)",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Avg Response Time",
+      "title": "P90 Response Time",
       "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "decbytes"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 6,
-        "w": 6,
-        "x": 0,
-        "y": 8
-      },
-      "id": 2,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "pluginVersion": "10.1.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "machine_memory_bytes",
-          "instant": false,
-          "legendFormat": "__auto",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "Cluster Memory",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 6,
-        "w": 6,
-        "x": 6,
-        "y": 8
-      },
-      "id": 1,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "pluginVersion": "10.1.1",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "machine_cpu_cores",
-          "instant": false,
-          "legendFormat": "__auto",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "Cluster Cores",
-      "type": "stat"
     }
   ],
-  "refresh": "",
+  "refresh": false,
   "schemaVersion": 38,
   "style": "dark",
   "tags": [],
@@ -550,12 +418,13 @@
     "list": []
   },
   "time": {
-    "from": "now-15m",
-    "to": "now"
+    "from": "2023-09-11T11:16:25.680Z",
+    "to": "2023-09-11T11:23:50.567Z"
   },
   "timepicker": {},
   "timezone": "",
   "title": "New dashboard",
-  "version": 0,
+  "uid": "aa4f2a22-2f4f-4722-8d2e-9c93c43238dd",
+  "version": 14,
   "weekStart": ""
 }
