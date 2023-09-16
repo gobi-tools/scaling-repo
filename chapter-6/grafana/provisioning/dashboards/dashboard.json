@@ -304,7 +304,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum(rate(app_server_summary_request_duration_seconds_count{route!=\"/metrics\"}[1m])) by (route)",
+          "expr": "sum(rate(app_server_histogram_request_duration_seconds_count{route!=\"/metrics\"}[1m])) by (route)",
           "instant": false,
           "legendFormat": "App Server RPS",
           "range": true,
@@ -411,7 +411,7 @@
       "type": "timeseries"
     }
   ],
-  "refresh": false,
+  "refresh": "",
   "schemaVersion": 38,
   "style": "dark",
   "tags": [],
