@@ -111,7 +111,7 @@
           "editorMode": "code",
           "expr": "avg(rate(container_cpu_usage_seconds_total{name='app-server'}[1m])) by (name) * 100",
           "instant": false,
-          "legendFormat": "__auto",
+          "legendFormat": "App Server % CPU Usage",
           "range": true,
           "refId": "A"
         }
@@ -211,7 +211,7 @@
           "editorMode": "code",
           "expr": "sum((container_memory_usage_bytes{name=\"app-server\"} / container_spec_memory_limit_bytes{name=\"app-server\"})) by (name) * 100",
           "instant": false,
-          "legendFormat": "{{label_name}}",
+          "legendFormat": "App Server % Memory Usage",
           "range": true,
           "refId": "A"
         }
@@ -304,9 +304,9 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum(rate(app_server_summary_request_duration_seconds_count[1m])) by (route)",
+          "expr": "sum(rate(app_server_summary_request_duration_seconds_count{route!=\"/metrics\"}[1m])) by (route)",
           "instant": false,
-          "legendFormat": "__auto",
+          "legendFormat": "App Server RPS",
           "range": true,
           "refId": "A"
         }
@@ -356,6 +356,7 @@
             }
           },
           "mappings": [],
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -399,9 +400,9 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "avg(app_server_summary_request_duration_seconds{quantile=\"0.9\"}) by (route)",
+          "expr": "histogram_quantile(0.9, sum(rate(app_server_histogram_request_duration_seconds_bucket{route!=\"/metrics\"}[1m])) by (le))",
           "instant": false,
-          "legendFormat": "__auto",
+          "legendFormat": "P90",
           "range": true,
           "refId": "A"
         }
@@ -418,8 +419,8 @@
     "list": []
   },
   "time": {
-    "from": "2023-09-11T11:16:25.680Z",
-    "to": "2023-09-11T11:23:50.567Z"
+    "from": "now-15m",
+    "to": "now"
   },
   "timepicker": {},
   "timezone": "",

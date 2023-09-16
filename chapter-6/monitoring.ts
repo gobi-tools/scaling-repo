@@ -2,20 +2,24 @@ import client from 'prom-client';
 
 export const register = new client.Registry();
 
-export const requestDurationSummary = new client.Summary({
-  name: 'app_server_summary_request_duration_seconds',
-  help: 'Summary of request durations',
+// Histogram metric for measuring request durations
+const requestDurationHistogram = new client.Histogram({
+  name: 'app_server_histogram_request_duration_seconds',
+  help: 'Histogram of request durations',
   labelNames: ['method', 'route'],
-  percentiles: [0.5, 0.75, 0.9, 0.95, 0.99]
+
+  // Duration buckets, in ms & seconds
+  // 5ms, 10ms, 25ms, 50ms, 100ms, 250ms, 500ms, 800ms, 1s, 1.2s, 1.5s
+  buckets: [0.005, 0.01, 0.02, 0.05, 0.1, 0.25, 0.5, 0.8, 1, 1.2, 1.5]
 });
-register.registerMetric(requestDurationSummary);
+register.registerMetric(requestDurationHistogram);
 
 register.setDefaultLabels({ app: 'app-server' });
 
 client.collectDefaultMetrics({ register });
 
 export const metricsMiddleware = (req, res, next) => {
-  const end = requestDurationSummary.startTimer();
+  const end = requestDurationHistogram.startTimer();
   res.on('finish', () => {
     end({method: req.method, route: req.originalUrl });
   });
