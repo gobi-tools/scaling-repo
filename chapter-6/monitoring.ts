@@ -9,8 +9,8 @@ const requestDurationHistogram = new client.Histogram({
   labelNames: ['method', 'route'],
 
   // Duration buckets, in ms & seconds
-  // 5ms, 10ms, 25ms, 50ms, 100ms, 250ms, 500ms, 800ms, 1s, 1.2s, 1.5s
-  buckets: [0.005, 0.01, 0.02, 0.05, 0.1, 0.25, 0.5, 0.8, 1, 1.2, 1.5]
+  // 5ms, 10ms, 25ms, 50ms, 100ms, 250ms, 500ms, 800ms, 1s, 1.2s, 1.5s, 5s, 10s
+  buckets: [0.005, 0.01, 0.02, 0.05, 0.1, 0.25, 0.5, 0.8, 1, 1.2, 1.5, 5, 10]
 });
 register.registerMetric(requestDurationHistogram);
 
