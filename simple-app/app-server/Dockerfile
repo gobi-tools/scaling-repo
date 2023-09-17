@@ -10,8 +10,7 @@ COPY tsconfig.json .
 
 RUN npm i
 
-COPY monitoring.ts monitoring.ts
-COPY server.ts server.ts
+COPY src/ src/
 
 EXPOSE 3000
-CMD [ "npx", "ts-node", "server.ts" ]
+CMD [ "npx", "ts-node", "src/server.ts" ]
