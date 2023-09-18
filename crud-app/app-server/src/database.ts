@@ -7,8 +7,14 @@ export class Result {
   @PrimaryColumn('uuid')
   id: string
 
-  @Column()
-  value: number
+  @Column({ type: 'int' })
+  flips: number
+
+  @Column({ type: 'int' })
+  heads: number
+
+  @Column({ type: 'int' })
+  tails: number
 }
 
 export const dataSource = new DataSource({ type: 'postgres', url: DB_HOST, entities: [Result], synchronize: true });
