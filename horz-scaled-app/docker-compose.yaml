@@ -1,0 +1,101 @@
+version: '3.2'
+services:
+  reverseproxy:
+    build:
+      context: ./reverse-proxy
+      dockerfile: 'Dockerfile'
+    ports:
+      - 80:80
+    restart: always
+    depends_on:
+      - app-server
+      - db
+    cpus: '1.0'
+    mem_limit: 500m
+
+  app-server:
+    build:
+      context: ./app-server
+      dockerfile: 'Dockerfile'
+    scale: 4
+    cpus: '1.0'
+    mem_limit: 500m
+    restart: always
+    depends_on:
+      - db
+
+  db:
+    container_name: crud-db
+    image: postgres:14.1-alpine
+    cpus: '1.0'
+    mem_limit: 500m
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - 5432:5432
+    volumes: 
+      - db:/var/lib/postgresql/data
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.47.1
+    restart: always
+    volumes:
+      # allow cAdvisor access to host's time info (read only)
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      # allow cAdvisor access to host's file system (read only)
+      - /:/rootfs:ro
+      # allow cAdvisor access to host's runtime info and sockets (read write)
+      - /var/run:/var/run:rw
+      # allow cAdvisor access to host's sytem info and stats (read only)
+      - /sys:/sys:ro
+      # allow cAdvisor access to host's docker containers (read only) 
+      - /var/lib/docker:/var/lib/docker:ro
+      # allow cAdvisor to communicate to host's docker demo (read write)
+      - /var/run/docker.sock:/var/run/docker.sock:rw
+    devices:
+      # allow cAdvisor to access kernel messages within the container
+      - /dev/kmsg:/dev/kmsg
+    ports:
+      - 8080:8080
+    depends_on:
+      - app-server
+  
+  prometheus:
+    image: prom/prometheus
+    restart: always
+    ports:
+      - '9090:9090'
+    volumes:
+      # allow Prometheus access to host's time info (read only)
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      # copy "prometheus.yml" from host to container
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - app-server
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - '3005:3000'
+    depends_on:
+      - prometheus
+    environment:
+      - GF_LOG_LEVEL=error
+    restart: always
+    volumes:
+      # allow Grafana access to host's time info (read only)
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      # copy Grafana config files from host to container
+      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/data:/var/lib/grafana
+    user: "1000"
+
+volumes:
+  db:
+    driver: local
