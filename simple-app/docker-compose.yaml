@@ -8,7 +8,7 @@ services:
     ports:
       - 80:3000
     scale: 1
-    cpus: '1.0'
+    cpus: '0.5'
     mem_limit: 200m
     restart: always
 
