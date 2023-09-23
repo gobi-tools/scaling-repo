@@ -1,7 +1,6 @@
 version: '3.2'
 services:
   app-server:
-    container_name: app-server
     build:
       context: ./app-server
       dockerfile: 'Dockerfile'
