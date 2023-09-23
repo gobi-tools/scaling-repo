@@ -311,9 +311,22 @@
           "legendFormat": "DB % CPU Usage",
           "range": true,
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum((container_memory_usage_bytes{name=\"crud-db\"} / container_spec_memory_limit_bytes{name=\"crud-db\"})) by (name) * 100",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "DB % Mem Usage",
+          "range": true,
+          "refId": "B"
         }
       ],
-      "title": "DB % CPU Usage",
+      "title": "DB Resource Usage",
       "type": "timeseries"
     },
     {
@@ -406,14 +419,27 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum((container_memory_usage_bytes{name=\"crud-db\"} / container_spec_memory_limit_bytes{name=\"crud-db\"})) by (name) * 100",
+          "expr": "avg(rate(container_cpu_usage_seconds_total{name=\"cache\"}[1m])) by (name) * 100",
+          "hide": false,
           "instant": false,
-          "legendFormat": "App Server % Memory Usage",
+          "legendFormat": "Cache % CPU Usage",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum((container_memory_usage_bytes{name=\"cache\"} / container_spec_memory_limit_bytes{name=\"cache\"})) by (name) * 100",
+          "instant": false,
+          "legendFormat": "Cache % Memory Usage",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "DB % Memory Usage",
+      "title": "Cache Resource Usage",
       "type": "timeseries"
     },
     {
@@ -608,7 +634,7 @@
       "type": "timeseries"
     }
   ],
-  "refresh": "",
+  "refresh": false,
   "schemaVersion": 38,
   "style": "dark",
   "tags": [],
@@ -616,7 +642,7 @@
     "list": []
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},
