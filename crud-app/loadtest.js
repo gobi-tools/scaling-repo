@@ -3,11 +3,12 @@ import { sleep } from 'k6';
 
 export const options = {
   stages: [
-    { duration: '2m', target: 1024 },
+    { duration: '1m', target: 1 },
+    { duration: '1m', target: 1 },
   ],
 }
 
 export default function () {
-  http.post('http://localhost/flips?flips=100000');
+  http.post('http://localhost/flips?flips=1');
   sleep(1);
 }

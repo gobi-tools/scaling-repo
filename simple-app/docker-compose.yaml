@@ -8,8 +8,8 @@ services:
     ports:
       - 80:3000
     scale: 1
-    cpus: '0.5'
-    mem_limit: 200m
+    cpus: '1.0'
+    mem_limit: 500m
     restart: always
 
   cadvisor:
