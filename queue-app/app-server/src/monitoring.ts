@@ -14,6 +14,12 @@ const requestDurationHistogram = new client.Histogram({
 });
 register.registerMetric(requestDurationHistogram);
 
+export const consumerLoadGauge = new client.Gauge({
+  name: 'consumer_load_gauge',
+  help: 'Consumer load gauge',
+});
+register.registerMetric(consumerLoadGauge);
+
 register.setDefaultLabels({ app: 'app-server' });
 
 client.collectDefaultMetrics({ register });

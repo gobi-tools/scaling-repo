@@ -1,6 +1,12 @@
+import express from 'express';
+
 import { queue } from './queue';
 import { Result, dataSource } from './database';
 import { cache } from './cache';
+import { consumerLoadGauge, metricsEndpoint } from './monitoring';
+
+const PORT = 7000;
+const app = express();
 
 (async function () {
   await queue.connect();
@@ -34,5 +40,19 @@ import { cache } from './cache';
 
     // save to Cache
     await cache.set(flips, result);
+
+    // decrement gauge
+    consumerLoadGauge.dec();
   });
 })();
+
+const router = express.Router();
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+router.get(`/metrics`, metricsEndpoint);
+app.use(`/`, router);
+app.listen(PORT, async () => {
+  console.log(`Consumer Metrics server listening on port ${PORT}`);
+});

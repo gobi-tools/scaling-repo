@@ -7,6 +7,12 @@ scrape_configs:
       - targets: ['app-server:3000']
     metrics_path: metrics
     scheme: http
+
+  - job_name: 'consumer'
+    static_configs:
+      - targets: ['consumer:7000']
+    metrics_path: metrics
+    scheme: http
     
   - job_name: 'cadvisor'
     static_configs:
