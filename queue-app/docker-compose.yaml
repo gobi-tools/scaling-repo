@@ -14,7 +14,23 @@ services:
     depends_on:
       - db
       - cache
-      
+      - queue
+
+  consumer:
+    container_name: consumer
+    build:
+      context: ./app-server
+      dockerfile: 'Dockerfile-Consumer'
+    ports:
+      - 7000:7000
+    scale: 1
+    cpus: '1.0'
+    mem_limit: 500m
+    restart: always
+    depends_on:
+      - db
+      - queue
+
   db:
     container_name: crud-db
     image: postgres:14.1-alpine
@@ -40,6 +56,22 @@ services:
     command: redis-server --save 20 1 --loglevel warning
     volumes:
       - cache:/data
+
+  queue:
+    image: rabbitmq:3.12-management-alpine
+    container_name: queue
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    cpus: '1.0'
+    mem_limit: 500m
+    healthcheck:
+      test: [ "CMD", "rabbitmqctl", "status" ]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+    environment:
+      - RABBITMQ_LOGS=error
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.47.1
