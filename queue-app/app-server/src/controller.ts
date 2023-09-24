@@ -11,7 +11,8 @@ export const flipsController = async (req, res) => {
     res.status(200).json({ success: true, ...cached });
   } else {
     const id = uuid();
-    await queue.send({ id, flips });
+    // important for performance to _NOT_ await the queue send operation 
+    queue.send({ id, flips });
     res.status(200).json({ success: true, id, flips, processing: true });
   }
 };
