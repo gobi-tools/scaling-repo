@@ -3,7 +3,7 @@ import { cache } from './cache';
 import { queue } from './queue';
 
 export const flipsController = async (req, res) => {
-  const flips = req.query.flips ?? 1;
+  const flips = req.body.flips ?? 1;
 
   const cached = await cache.get(flips);
 

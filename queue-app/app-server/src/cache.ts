@@ -16,15 +16,12 @@ export class Cache {
   async set(flips: number, value: Result) {
     const cacheValue = JSON.stringify(value);
     await this.client.set(this.key(flips), cacheValue);
-    console.log('saved to cache', value.id, value.flips);
   }
 
   async get(flips: number): Promise<Result | undefined> {
     const cacheValue = await this.client.get(this.key(flips));
 
     if (cacheValue) {
-      console.log('read from to cache', !!cacheValue);
-
       return JSON.parse(cacheValue) as Result;
     }
 

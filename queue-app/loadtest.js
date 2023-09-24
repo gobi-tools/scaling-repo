@@ -9,10 +9,10 @@ export const options = {
 }
 
 export default function () {
-  const flips = [1, 10, 1000, 10000, 100000, 500000, 1000000];
-  const flipIndex = randomIntFromInterval(0, 6);
-  const flip = flips[flipIndex];
-  http.post(`http://localhost/flips?flips=${flip}`);
+  const flips = randomIntFromInterval(550000, 650000);
+  const payload = JSON.stringify({ flips });
+  const headers = { headers: { 'Content-Type': 'application/json' }, };
+  http.post(`http://localhost/flips`, payload, headers);
   sleep(1);
 }
 
