@@ -3,11 +3,19 @@ import { sleep } from 'k6';
 
 export const options = {
   stages: [
-    { duration: '2m', target: 1024 },
+    { duration: '1m', target: 1024 },
+    { duration: '1m', target: 1024 },
   ],
 }
 
 export default function () {
-  http.post('http://localhost/flips?flips=100000');
+  const flips = randomIntFromInterval(550000, 650000);
+  const payload = JSON.stringify({ flips });
+  const headers = { headers: { 'Content-Type': 'application/json' }, };
+  http.post(`http://localhost/flips`, payload, headers);
   sleep(1);
+}
+
+function randomIntFromInterval(min, max) { // min and max included 
+  return Math.floor(Math.random() * (max - min + 1) + min)
 }

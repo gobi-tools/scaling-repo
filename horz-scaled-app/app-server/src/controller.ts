@@ -1,24 +1,23 @@
 import { v4 as uuid } from 'uuid';
-import { Result, dataSource } from './database';
+import { cache } from './cache';
+import { queue } from './queue';
+import { consumerLoadGauge } from './monitoring';
+import os from "os";
 
 export const flipsController = async (req, res) => {
-  const flips = req.query.flips ?? 1;
+  const flips = req.body.flips ?? 1;
 
-  let heads = 0, tails = 0;
+  // const cached = await cache.get(flips);
 
-  for (let i = 0; i < flips; i++) {
-    const value = Math.random();
-    if (value < 0.5) {
-      heads += 1;
-    } else {
-      tails += 1;
-    }
-  }
-
-  const id = uuid();
-  const result = { id, flips, heads, tails };
-  
-  const entity = dataSource.manager.create(Result, result);
-  await dataSource.manager.save(entity);
-  res.status(200).json({ success: true, result });
+  // if (cached) {
+    // res.status(200).json({ success: true, ...cached });
+  // } else {
+    const id = uuid();
+    // important for performance to _NOT_ await the queue send operation 
+    // queue.send({ id, flips });
+    // send metrics 
+    consumerLoadGauge.inc({ host: os.hostname() });
+    console.log('sending for', flips);
+    res.status(200).json({ success: true, id, flips, processing: true });
+  // }
 };

@@ -109,14 +109,27 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "avg(rate(container_cpu_usage_seconds_total{image=\"horz-scaled-app_app-server\"}[1m])) by (name) * 100",
+          "expr": "avg(rate(container_cpu_usage_seconds_total{image=\"horz-scaled-app-app-server\"}[1m])) by (name) * 100",
           "instant": false,
-          "legendFormat": "{{label}}",
+          "legendFormat": "App Server % CPU Usage",
           "range": true,
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum((container_memory_usage_bytes{image=\"horz-scaled-app-app-server\"} / container_spec_memory_limit_bytes{image=\"horz-scaled-app-app-server\"})) by (name) * 100",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "App Server % Memory Usage",
+          "range": true,
+          "refId": "B"
         }
       ],
-      "title": "App Server % CPU Usage",
+      "title": "App Server Resource Usage",
       "type": "timeseries"
     },
     {
@@ -189,7 +202,7 @@
         "x": 6,
         "y": 0
       },
-      "id": 4,
+      "id": 10,
       "options": {
         "legend": {
           "calcs": [],
@@ -209,14 +222,27 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum((container_memory_usage_bytes{image=\"horz-scaled-app_app-server\"} / container_spec_memory_limit_bytes{image=\"horz-scaled-app_app-server\"})) by (name) * 100",
+          "expr": "avg(rate(container_cpu_usage_seconds_total{image=\"horz-scaled-app-consumer\"}[1m])) by (name) * 100",
+          "hide": false,
           "instant": false,
-          "legendFormat": "{{label}}",
+          "legendFormat": "Consumer % CPU Usage",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum((container_memory_usage_bytes{image=\"horz-scaled-app-consumer\"} / container_spec_memory_limit_bytes{image=\"horz-scaled-app-consumer\"})) by (name) * 100",
+          "instant": false,
+          "legendFormat": "Consumer % Memory Usage",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "App Server % Memory Usage",
+      "title": "Consumer Resource Usage",
       "type": "timeseries"
     },
     {
@@ -321,12 +347,125 @@
           "expr": "sum((container_memory_usage_bytes{name=\"crud-db\"} / container_spec_memory_limit_bytes{name=\"crud-db\"})) by (name) * 100",
           "hide": false,
           "instant": false,
-          "legendFormat": "DB % Memory Usage",
+          "legendFormat": "DB % Mem Usage",
           "range": true,
           "refId": "B"
         }
       ],
-      "title": "DB % CPU & Mem Usage",
+      "title": "DB Resource Usage",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "line"
+            }
+          },
+          "mappings": [],
+          "max": 150,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 100
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 6,
+        "x": 18,
+        "y": 0
+      },
+      "id": 9,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "avg(rate(container_cpu_usage_seconds_total{name=\"cache\"}[1m])) by (name) * 100",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "Cache % CPU Usage",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum((container_memory_usage_bytes{name=\"cache\"} / container_spec_memory_limit_bytes{name=\"cache\"})) by (name) * 100",
+          "instant": false,
+          "legendFormat": "Cache % Memory Usage",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Cache Resource Usage",
       "type": "timeseries"
     },
     {
@@ -393,10 +532,10 @@
       "gridPos": {
         "h": 9,
         "w": 6,
-        "x": 18,
-        "y": 0
+        "x": 0,
+        "y": 9
       },
-      "id": 10,
+      "id": 11,
       "options": {
         "legend": {
           "calcs": [],
@@ -416,9 +555,9 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "avg(rate(container_cpu_usage_seconds_total{image=\"horz-scaled-app_reverseproxy\"}[1m])) by (name) * 100",
+          "expr": "avg(rate(container_cpu_usage_seconds_total{name=\"queue\"}[1m])) by (name) * 100",
           "instant": false,
-          "legendFormat": "Nginx % CPU ",
+          "legendFormat": "Queue % CPU Usage",
           "range": true,
           "refId": "A"
         },
@@ -428,15 +567,15 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum((container_memory_usage_bytes{image=\"horz-scaled-app_reverseproxy\"} / container_spec_memory_limit_bytes{image=\"horz-scaled-app_reverseproxy\"})) by (name) * 100",
+          "expr": "sum((container_memory_usage_bytes{name=\"queue\"} / container_spec_memory_limit_bytes{name=\"queue\"})) by (name) * 100",
           "hide": false,
           "instant": false,
-          "legendFormat": "Nginx % Memory ",
+          "legendFormat": "Queue % Mem Usage",
           "range": true,
           "refId": "B"
         }
       ],
-      "title": "Reverse Proxy % CPU & Mem Usage",
+      "title": "Queue Resource Usage",
       "type": "timeseries"
     },
     {
@@ -493,18 +632,17 @@
                 "value": 80
               }
             ]
-          },
-          "unit": "reqps"
+          }
         },
         "overrides": []
       },
       "gridPos": {
         "h": 9,
-        "w": 12,
-        "x": 0,
+        "w": 6,
+        "x": 6,
         "y": 9
       },
-      "id": 5,
+      "id": 12,
       "options": {
         "legend": {
           "calcs": [],
@@ -524,14 +662,124 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum(rate(app_server_histogram_request_duration_seconds_count{route!=\"/metrics\"}[1m])) by (route)",
+          "expr": "sum(consumer_load_gauge{job=\"app-server\"})",
+          "hide": false,
           "instant": false,
-          "legendFormat": "App Server RPS",
+          "legendFormat": "Messages on Queue",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum(abs(consumer_load_gauge{job=\"consumer\"}))",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "Messages consumed from Queue",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "App Server RPS",
+      "title": "Consumption Performance",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 6,
+        "x": 12,
+        "y": 9
+      },
+      "id": 14,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "avg(rate(app_server_histogram_request_duration_seconds_count{route!=\"/metrics\"}[1m])) by (host)",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "App Server RPS (Host)",
       "type": "timeseries"
     },
     {
@@ -596,8 +844,8 @@
       },
       "gridPos": {
         "h": 9,
-        "w": 12,
-        "x": 12,
+        "w": 6,
+        "x": 18,
         "y": 9
       },
       "id": 7,
@@ -620,14 +868,124 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.9, sum(rate(app_server_histogram_request_duration_seconds_bucket{route!=\"/metrics\"}[1m])) by (le))",
+          "expr": "histogram_quantile(0.9, sum(rate(app_server_histogram_request_duration_seconds_bucket{route!=\"/metrics\"}[1m])) by (le, host))",
           "instant": false,
-          "legendFormat": "P90",
+          "legendFormat": "{{label}}",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "App Server P90 Response Time",
+      "title": "App Server P90 Response Time (Host)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "line"
+            }
+          },
+          "mappings": [],
+          "max": 140,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 100
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 6,
+        "x": 0,
+        "y": 18
+      },
+      "id": 13,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "avg(rate(container_cpu_usage_seconds_total{image=\"horz-scaled-app-reverseproxy\"}[1m])) by (name) * 100",
+          "instant": false,
+          "legendFormat": "Reverse Proxy % CPU Usage",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum((container_memory_usage_bytes{image=\"horz-scaled-app-reverseproxy\"} / container_spec_memory_limit_bytes{image=\"horz-scaled-app-reverseproxy\"})) by (name) * 100",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "Reverse Proxy % Mem Usage",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "Reverse Proxy Resource Usage",
       "type": "timeseries"
     }
   ],
@@ -639,7 +997,7 @@
     "list": []
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-30m",
     "to": "now"
   },
   "timepicker": {},

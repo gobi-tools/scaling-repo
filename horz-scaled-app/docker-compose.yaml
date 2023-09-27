@@ -1,6 +1,7 @@
 version: '3.2'
 services:
   reverseproxy:
+    container_name: reverseproxy
     build:
       context: ./reverse-proxy
       dockerfile: 'Dockerfile'
@@ -10,19 +11,42 @@ services:
     depends_on:
       - app-server
       - db
+      - consumer
+      - cache
+      - queue
     cpus: '1.0'
     mem_limit: 500m
 
   app-server:
+    # container_name: app-server
     build:
       context: ./app-server
       dockerfile: 'Dockerfile'
+    # ports:
+    #   - 80:3000
     scale: 4
     cpus: '1.0'
     mem_limit: 500m
     restart: always
     depends_on:
       - db
+      - cache
+      - queue
+
+  consumer:
+    # container_name: consumer
+    build:
+      context: ./app-server
+      dockerfile: 'Dockerfile-Consumer'
+    # ports:
+    #   - 7000:7000
+    scale: 0
+    cpus: '1.0'
+    mem_limit: 500m
+    restart: always
+    depends_on:
+      - db
+      - queue
 
   db:
     container_name: crud-db
@@ -35,8 +59,36 @@ services:
       - POSTGRES_PASSWORD=postgres
     ports:
       - 5432:5432
-    volumes: 
+    volumes:
       - db:/var/lib/postgresql/data
+
+  cache:
+    container_name: cache
+    image: redis:6.2-alpine
+    restart: always
+    cpus: '1.0'
+    mem_limit: 200m
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning
+    volumes:
+      - cache:/data
+
+  queue:
+    image: rabbitmq:3.12-management-alpine
+    container_name: queue
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    cpus: '1.0'
+    mem_limit: 500m
+    healthcheck:
+      test: [ "CMD", "rabbitmqctl", "status" ]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+    environment:
+      - RABBITMQ_LOGS=error
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.47.1
@@ -62,9 +114,9 @@ services:
       - 8080:8080
     depends_on:
       - app-server
-  
+
   prometheus:
-    image: prom/prometheus
+    image: prom/prometheus:latest
     restart: always
     ports:
       - '9090:9090'
@@ -98,4 +150,6 @@ services:
 
 volumes:
   db:
+    driver: local
+  cache:
     driver: local

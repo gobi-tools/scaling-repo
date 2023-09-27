@@ -1,4 +1,5 @@
 import { Column, DataSource, Entity, PrimaryColumn } from "typeorm";
+import 'reflect-metadata';
 
 const DB_HOST = 'postgresql://postgres:postgres@crud-db:5432';
 

@@ -1,4 +1,5 @@
 import client from 'prom-client';
+import os from "os";
 
 export const register = new client.Registry();
 
@@ -6,7 +7,7 @@ export const register = new client.Registry();
 const requestDurationHistogram = new client.Histogram({
   name: 'app_server_histogram_request_duration_seconds',
   help: 'Histogram of request durations',
-  labelNames: ['method', 'route'],
+  labelNames: ['method', 'route', 'host'],
 
   // Duration buckets, in ms & seconds
   // 5ms, 10ms, 25ms, 50ms, 100ms, 250ms, 500ms, 800ms, 1s, 1.2s, 1.5s, 5s, 10s
@@ -14,17 +15,34 @@ const requestDurationHistogram = new client.Histogram({
 });
 register.registerMetric(requestDurationHistogram);
 
+export const consumerLoadGauge = new client.Gauge({
+  name: 'consumer_load_gauge',
+  help: 'Consumer load gauge',
+  labelNames: ['host'],
+});
+register.registerMetric(consumerLoadGauge);
+
 register.setDefaultLabels({ app: 'app-server' });
 
 client.collectDefaultMetrics({ register });
 
-export const metricsMiddleware = (req, res, next) => {
-  const end = requestDurationHistogram.startTimer();
-  res.on('finish', () => {
-    end({method: req.method, route: req.originalUrl });
-  });
-  next();
+export function metricsMiddlewareWithHost(host: string) {
+  return (req, res, next) => {
+    const end = requestDurationHistogram.startTimer();
+    res.on('finish', () => {
+      end({method: req.method, route: req.originalUrl, host, });
+    });
+    next();
+  };
 };
+
+// export const metricsMiddleware = (req, res, next) => {
+//   const end = requestDurationHistogram.startTimer();
+//   res.on('finish', () => {
+//     end({method: req.method, route: req.originalUrl, host: os.hostname() });
+//   });
+//   next();
+// };
 
 export const metricsEndpoint = async (request, response) => {
   response.setHeader('Content-type', register.contentType);
