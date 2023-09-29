@@ -1,5 +1,4 @@
 import client from 'prom-client';
-import os from "os";
 
 export const register = new client.Registry();
 
@@ -35,14 +34,6 @@ export function metricsMiddlewareWithHost(host: string) {
     next();
   };
 };
-
-// export const metricsMiddleware = (req, res, next) => {
-//   const end = requestDurationHistogram.startTimer();
-//   res.on('finish', () => {
-//     end({method: req.method, route: req.originalUrl, host: os.hostname() });
-//   });
-//   next();
-// };
 
 export const metricsEndpoint = async (request, response) => {
   response.setHeader('Content-type', register.contentType);

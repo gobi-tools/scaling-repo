@@ -9,13 +9,10 @@ const PORT = 7000;
 const app = express();
 
 (async function () {
-  await queue.connect();
-  console.log('[Consumer] Queue connected');
   await dataSource.initialize();
-  console.log('[Consumer] Database connection initialised');
   await cache.connect();
-  console.log('[Consumer] Cache connected');
-
+  console.log('[Consumer] Started');
+  
   await queue.consume(async (data) => {
     const { id, flips } = data;
     console.log('Consuming', id, flips);
@@ -54,5 +51,5 @@ app.use(express.urlencoded({ extended: true }));
 router.get(`/metrics`, metricsEndpoint);
 app.use(`/`, router);
 app.listen(PORT, async () => {
-  console.log(`Consumer Metrics server listening on port ${PORT}`);
+  console.log(`[Consumer] Metrics server listening on port ${PORT}`);
 });

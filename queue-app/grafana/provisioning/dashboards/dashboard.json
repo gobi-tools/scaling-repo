@@ -85,7 +85,7 @@
       },
       "gridPos": {
         "h": 9,
-        "w": 6,
+        "w": 5,
         "x": 0,
         "y": 0
       },
@@ -198,8 +198,8 @@
       },
       "gridPos": {
         "h": 9,
-        "w": 6,
-        "x": 6,
+        "w": 5,
+        "x": 5,
         "y": 0
       },
       "id": 10,
@@ -308,8 +308,8 @@
       },
       "gridPos": {
         "h": 9,
-        "w": 6,
-        "x": 12,
+        "w": 5,
+        "x": 10,
         "y": 0
       },
       "id": 8,
@@ -381,6 +381,116 @@
             },
             "insertNulls": false,
             "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "line"
+            }
+          },
+          "mappings": [],
+          "max": 140,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 100
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 5,
+        "x": 15,
+        "y": 0
+      },
+      "id": 11,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "avg(rate(container_cpu_usage_seconds_total{name=\"queue\"}[1m])) by (name) * 100",
+          "instant": false,
+          "legendFormat": "Queue % CPU Usage",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum((container_memory_usage_bytes{name=\"queue\"} / container_spec_memory_limit_bytes{name=\"queue\"})) by (name) * 100",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "Queue % Mem Usage",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "Queue Resource Usage",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
             "lineStyle": {
               "fill": "solid"
             },
@@ -421,8 +531,8 @@
       },
       "gridPos": {
         "h": 9,
-        "w": 6,
-        "x": 18,
+        "w": 4,
+        "x": 20,
         "y": 0
       },
       "id": 9,
@@ -506,12 +616,10 @@
               "mode": "none"
             },
             "thresholdsStyle": {
-              "mode": "line"
+              "mode": "off"
             }
           },
           "mappings": [],
-          "max": 140,
-          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -521,11 +629,10 @@
               },
               {
                 "color": "red",
-                "value": 100
+                "value": 80
               }
             ]
-          },
-          "unit": "percent"
+          }
         },
         "overrides": []
       },
@@ -535,7 +642,7 @@
         "x": 0,
         "y": 9
       },
-      "id": 11,
+      "id": 12,
       "options": {
         "legend": {
           "calcs": [],
@@ -555,11 +662,12 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "avg(rate(container_cpu_usage_seconds_total{name=\"queue\"}[1m])) by (name) * 100",
+          "expr": "consumer_load_gauge{job=\"app-server\"}",
+          "hide": false,
           "instant": false,
-          "legendFormat": "Queue % CPU Usage",
+          "legendFormat": "Messages to Queue",
           "range": true,
-          "refId": "A"
+          "refId": "B"
         },
         {
           "datasource": {
@@ -567,15 +675,15 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum((container_memory_usage_bytes{name=\"queue\"} / container_spec_memory_limit_bytes{name=\"queue\"})) by (name) * 100",
+          "expr": "abs(consumer_load_gauge{job=\"consumer\"})",
           "hide": false,
           "instant": false,
-          "legendFormat": "Queue % Mem Usage",
+          "legendFormat": "Messages consumed from Queue",
           "range": true,
-          "refId": "B"
+          "refId": "A"
         }
       ],
-      "title": "Queue Resource Usage",
+      "title": "Consumption Lag",
       "type": "timeseries"
     },
     {
@@ -609,8 +717,8 @@
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "never",
-            "spanNulls": true,
+            "showPoints": "auto",
+            "spanNulls": false,
             "stacking": {
               "group": "A",
               "mode": "none"
@@ -620,6 +728,7 @@
             }
           },
           "mappings": [],
+          "max": 1,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -632,7 +741,8 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unit": "percentunit"
         },
         "overrides": []
       },
@@ -642,7 +752,7 @@
         "x": 6,
         "y": 9
       },
-      "id": 12,
+      "id": 13,
       "options": {
         "legend": {
           "calcs": [],
@@ -662,28 +772,15 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "consumer_load_gauge{job=\"app-server\"}",
+          "expr": "sum(cache_hit_rate{job=\"app-server\"}) / sum(app_server_histogram_request_duration_seconds_count{route!=\"/metrics\"})",
           "hide": false,
           "instant": false,
-          "legendFormat": "Messages on Queue",
+          "legendFormat": "% Cache Hit Rate",
           "range": true,
-          "refId": "B"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "editorMode": "code",
-          "expr": "abs(consumer_load_gauge{job=\"consumer\"})",
-          "hide": false,
-          "instant": false,
-          "legendFormat": "Messages consumed from Queue",
-          "range": true,
-          "refId": "A"
+          "refId": "C"
         }
       ],
-      "title": "Consumption Performance",
+      "title": "% Cache Hit Rate",
       "type": "timeseries"
     },
     {
@@ -876,9 +973,85 @@
       ],
       "title": "App Server P90 Response Time",
       "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 18
+      },
+      "id": 14,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "10.1.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "consumer_load_gauge{job=\"app-server\"}",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "Messages to Queue",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "abs(consumer_load_gauge{job=\"consumer\"})",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "Messages consumed from Queue",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Messages Sent vs Consumed",
+      "type": "stat"
     }
   ],
-  "refresh": false,
+  "refresh": "",
   "schemaVersion": 38,
   "style": "dark",
   "tags": [],
