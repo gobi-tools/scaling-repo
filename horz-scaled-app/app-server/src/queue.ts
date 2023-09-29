@@ -11,6 +11,7 @@ export class Queue {
   private async connect() {
     this.connection = await amqp.connect(QUEUE_HOST);
     this.channel = await this.connection.createChannel();
+    await this.channel.assertQueue(QUEUE_NAME, { durable: false });
     this.isConnected = true;
   }
 
@@ -20,7 +21,6 @@ export class Queue {
     }
 
     const message = JSON.stringify(data);
-    await this.channel.assertQueue(QUEUE_NAME, { durable: false });
     this.channel.sendToQueue(QUEUE_NAME, Buffer.from(message));
     console.log(" [x] Sent message", message);
   }
@@ -30,7 +30,6 @@ export class Queue {
       await this.connect();
     }
     
-    await this.channel.assertQueue(QUEUE_NAME, { durable: false });
     await this.channel.prefetch(1);
 
     const ackStrategy = { noAck: false };
