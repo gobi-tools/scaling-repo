@@ -9,22 +9,23 @@ services:
       - 80:80
     restart: always
     depends_on:
-      - app-server
-      - db
-      - consumer
-      - cache
-      - queue
-    cpus: '1.0'
+      - app-server-1
+      - app-server-2
+      - app-server-3
+      - app-server-4
+    cpus: '2.0'
     mem_limit: 500m
 
-  app-server:
-    # container_name: app-server
+  app-server-1: &app-server-template
+    container_name: app-server-1
     build:
       context: ./app-server
       dockerfile: 'Dockerfile'
-    # ports:
-    #   - 80:3000
-    scale: 4
+    ports:
+      - 3000:3000
+    environment:
+      - PORT=3000
+      - APP_NAME=app-server-1
     cpus: '1.0'
     mem_limit: 500m
     restart: always
@@ -32,21 +33,78 @@ services:
       - db
       - cache
       - queue
+  
+  app-server-2:
+    <<: *app-server-template
+    container_name: app-server-2
+    ports:
+      - 3001:3001
+    environment:
+      - PORT=3001
+      - APP_NAME=app-server-2
+  
+  app-server-3:
+    <<: *app-server-template
+    container_name: app-server-3
+    ports:
+      - 3002:3002
+    environment:
+      - PORT=3002
+      - APP_NAME=app-server-3
 
-  consumer:
-    # container_name: consumer
+  app-server-4:
+    <<: *app-server-template
+    container_name: app-server-4
+    ports:
+      - 3003:3003
+    environment:
+      - PORT=3003
+      - APP_NAME=app-server-4
+
+  consumer-1: &consumer-template
+    container_name: consumer-1
     build:
       context: ./app-server
       dockerfile: 'Dockerfile-Consumer'
-    # ports:
-    #   - 7000:7000
-    scale: 0
+    ports:
+      - 7000:7000
     cpus: '1.0'
     mem_limit: 500m
     restart: always
     depends_on:
       - db
+      - cache
       - queue
+    environment:
+      - PORT=7000
+      - APP_NAME=consumer-1
+
+  consumer-2: 
+    <<: *consumer-template
+    container_name: consumer-2
+    ports:
+      - 7001:7001
+    environment:
+      - PORT=7001
+      - APP_NAME=consumer-2
+
+  consumer-3: 
+    <<: *consumer-template
+    container_name: consumer-3
+    ports:
+      - 7002:7002
+    environment:
+      - PORT=7002
+      - APP_NAME=consumer-3
+  
+  consumer-4: 
+    <<: *consumer-template
+    container_name: consumer-4
+    ports:
+      - 7003:7003
+    environment:
+      - PORT=7003
+      - APP_NAME=consumer-4
 
   db:
     container_name: crud-db
@@ -83,10 +141,10 @@ services:
     cpus: '1.0'
     mem_limit: 500m
     healthcheck:
-      test: [ "CMD", "rabbitmqctl", "status" ]
-      interval: 5s
-      timeout: 10s
-      retries: 10
+        test: ["CMD", "curl", "-f", "http://localhost:15672"]
+        interval: 5s
+        timeout: 10s
+        retries: 10
     environment:
       - RABBITMQ_LOGS=error
 
@@ -112,8 +170,8 @@ services:
       - /dev/kmsg:/dev/kmsg
     ports:
       - 8080:8080
-    depends_on:
-      - app-server
+    # depends_on:
+    #   - app-server
 
   prometheus:
     image: prom/prometheus:latest
@@ -127,7 +185,8 @@ services:
       # copy "prometheus.yml" from host to container
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     depends_on:
-      - app-server
+      - app-server-1
+      - app-server-2
 
   grafana:
     image: grafana/grafana

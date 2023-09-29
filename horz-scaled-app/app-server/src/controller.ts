@@ -14,10 +14,9 @@ export const flipsController = async (req, res) => {
   // } else {
     const id = uuid();
     // important for performance to _NOT_ await the queue send operation 
-    // queue.send({ id, flips });
+    queue.send({ id, flips });
     // send metrics 
     consumerLoadGauge.inc({ host: os.hostname() });
-    console.log('sending for', flips);
     res.status(200).json({ success: true, id, flips, processing: true });
   // }
 };

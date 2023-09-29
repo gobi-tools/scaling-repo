@@ -6,13 +6,19 @@ const QUEUE_NAME = 'default-2';
 export class Queue {
   private connection: amqp.Connection;
   private channel: amqp.Channel;
+  private isConnected: boolean = false;
 
-  async connect() {
+  private async connect() {
     this.connection = await amqp.connect(QUEUE_HOST);
     this.channel = await this.connection.createChannel();
+    this.isConnected = true;
   }
 
   async send(data: any) {
+    if (!this.isConnected) {
+      await this.connect();
+    }
+
     const message = JSON.stringify(data);
     await this.channel.assertQueue(QUEUE_NAME, { durable: false });
     this.channel.sendToQueue(QUEUE_NAME, Buffer.from(message));
@@ -20,6 +26,10 @@ export class Queue {
   }
 
   async consume(callback: (data: any) => void) {
+    if (!this.isConnected) {
+      await this.connect();
+    }
+    
     await this.channel.assertQueue(QUEUE_NAME, { durable: false });
     await this.channel.prefetch(1);
 

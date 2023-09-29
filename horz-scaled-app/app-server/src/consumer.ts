@@ -1,21 +1,18 @@
 import express from 'express';
-import os from "os";
 
 import { queue } from './queue';
 import { Result, dataSource } from './database';
 import { cache } from './cache';
 import { consumerLoadGauge, metricsEndpoint } from './monitoring';
 
-const PORT = 7000;
+const PORT = process.env.PORT;
+const APP_NAME = process.env.APP_NAME;
 const app = express();
 
 (async function () {
-  await queue.connect();
-  console.log('[Consumer] Queue connected');
   await dataSource.initialize();
-  console.log('[Consumer] Database connection initialised');
   await cache.connect();
-  console.log('[Consumer] Cache connected');
+  console.log(`[Consumer] ${APP_NAME} DB OK; Cache OK;`);
 
   await queue.consume(async (data) => {
     const { id, flips } = data;
@@ -43,7 +40,7 @@ const app = express();
     await cache.set(flips, result);
 
     // decrement gauge
-    consumerLoadGauge.dec({ host: os.hostname() });
+    consumerLoadGauge.dec({ host: APP_NAME });
   });
 })();
 
@@ -55,5 +52,5 @@ app.use(express.urlencoded({ extended: true }));
 router.get(`/metrics`, metricsEndpoint);
 app.use(`/`, router);
 app.listen(PORT, async () => {
-  console.log(`Consumer Metrics server listening on port ${PORT}`);
+  console.log(`[Consumer] ${APP_NAME} Metrics server listening on port ${PORT}`);
 });

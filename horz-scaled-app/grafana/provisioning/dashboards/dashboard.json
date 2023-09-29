@@ -109,9 +109,9 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "avg(rate(container_cpu_usage_seconds_total{image=\"horz-scaled-app-app-server\"}[1m])) by (name) * 100",
+          "expr": "avg(rate(container_cpu_usage_seconds_total{name=~\"app-server-.*\"}[1m])) by (name) * 100",
           "instant": false,
-          "legendFormat": "App Server % CPU Usage",
+          "legendFormat": "% CPU {{name}}",
           "range": true,
           "refId": "A"
         },
@@ -121,10 +121,10 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum((container_memory_usage_bytes{image=\"horz-scaled-app-app-server\"} / container_spec_memory_limit_bytes{image=\"horz-scaled-app-app-server\"})) by (name) * 100",
+          "expr": "sum((container_memory_usage_bytes{name=~\"app-server-.*\"} / container_spec_memory_limit_bytes{name=~\"app-server-.*\"})) by (name) * 100",
           "hide": false,
           "instant": false,
-          "legendFormat": "App Server % Memory Usage",
+          "legendFormat": "% Mem {{name}}",
           "range": true,
           "refId": "B"
         }
@@ -222,10 +222,10 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "avg(rate(container_cpu_usage_seconds_total{image=\"horz-scaled-app-consumer\"}[1m])) by (name) * 100",
+          "expr": "avg(rate(container_cpu_usage_seconds_total{name=~\"consumer-.*\"}[1m])) by (name) * 100",
           "hide": false,
           "instant": false,
-          "legendFormat": "Consumer % CPU Usage",
+          "legendFormat": "% CPU {{name}}",
           "range": true,
           "refId": "B"
         },
@@ -235,9 +235,9 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum((container_memory_usage_bytes{image=\"horz-scaled-app-consumer\"} / container_spec_memory_limit_bytes{image=\"horz-scaled-app-consumer\"})) by (name) * 100",
+          "expr": "sum((container_memory_usage_bytes{name=~\"consumer-.*\"} / container_spec_memory_limit_bytes{name=~\"consumer-.*\"})) by (name) * 100",
           "instant": false,
-          "legendFormat": "Consumer % Memory Usage",
+          "legendFormat": "% Mem {{name}}",
           "range": true,
           "refId": "A"
         }
@@ -771,10 +771,10 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "avg(rate(app_server_histogram_request_duration_seconds_count{route!=\"/metrics\"}[1m])) by (host)",
+          "expr": "sum(rate(app_server_histogram_request_duration_seconds_count{route!=\"/metrics\"}[1m])) by (host)",
           "hide": false,
           "instant": false,
-          "legendFormat": "__auto",
+          "legendFormat": "RPS {{host}}",
           "range": true,
           "refId": "B"
         }
@@ -868,9 +868,10 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
+          "exemplar": false,
           "expr": "histogram_quantile(0.9, sum(rate(app_server_histogram_request_duration_seconds_bucket{route!=\"/metrics\"}[1m])) by (le, host))",
           "instant": false,
-          "legendFormat": "{{label}}",
+          "legendFormat": "P90 {{host}} ",
           "range": true,
           "refId": "A"
         }
@@ -997,7 +998,7 @@
     "list": []
   },
   "time": {
-    "from": "now-30m",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},
