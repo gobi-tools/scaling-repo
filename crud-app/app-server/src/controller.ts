@@ -2,7 +2,7 @@ import { v4 as uuid } from 'uuid';
 import { Result, dataSource } from './database';
 
 export const flipsController = async (req, res) => {
-  const flips = req.query.flips ?? 1;
+  const flips = req.body.flips ?? 1;
 
   let heads = 0, tails = 0;
 

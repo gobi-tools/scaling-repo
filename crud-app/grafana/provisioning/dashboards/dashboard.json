@@ -109,11 +109,12 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "avg(rate(container_cpu_usage_seconds_total{image=\"crud-app_app-server\"}[1m])) by (name) * 100",
+          "expr": "avg(rate(container_cpu_usage_seconds_total{name=\"crud-app-app-server-1\"}[1m])) * 100",
+          "hide": false,
           "instant": false,
           "legendFormat": "App Server % CPU Usage",
           "range": true,
-          "refId": "A"
+          "refId": "B"
         }
       ],
       "title": "App Server % CPU Usage",
@@ -209,7 +210,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum((container_memory_usage_bytes{image=\"crud-app_app-server\"} / container_spec_memory_limit_bytes{image=\"crud-app_app-server\"})) by (name) * 100",
+          "expr": "sum((container_memory_usage_bytes{name=\"crud-app-app-server-1\"} / container_spec_memory_limit_bytes{name=\"crud-app-app-server-1\"})) * 100",
           "instant": false,
           "legendFormat": "App Server % Memory Usage",
           "range": true,
@@ -608,7 +609,7 @@
       "type": "timeseries"
     }
   ],
-  "refresh": "",
+  "refresh": false,
   "schemaVersion": 38,
   "style": "dark",
   "tags": [],

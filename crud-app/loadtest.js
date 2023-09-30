@@ -9,6 +9,9 @@ export const options = {
 }
 
 export default function () {
-  http.post('http://localhost/flips?flips=1');
+  const flips = 1;
+  const payload = JSON.stringify({ flips });
+  const headers = { headers: { 'Content-Type': 'application/json' }, };
+  http.post(`http://localhost/flips`, payload, headers);
   sleep(1);
 }
