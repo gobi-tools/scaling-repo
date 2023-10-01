@@ -84,8 +84,8 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 9,
-        "w": 6,
+        "h": 8,
+        "w": 7,
         "x": 0,
         "y": 0
       },
@@ -94,7 +94,7 @@
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom",
+          "placement": "right",
           "showLegend": true
         },
         "tooltip": {
@@ -197,9 +197,9 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 9,
-        "w": 6,
-        "x": 6,
+        "h": 8,
+        "w": 7,
+        "x": 7,
         "y": 0
       },
       "id": 10,
@@ -207,7 +207,7 @@
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom",
+          "placement": "right",
           "showLegend": true
         },
         "tooltip": {
@@ -307,9 +307,9 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 9,
-        "w": 6,
-        "x": 12,
+        "h": 8,
+        "w": 5,
+        "x": 14,
         "y": 0
       },
       "id": 8,
@@ -420,9 +420,9 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 9,
-        "w": 6,
-        "x": 18,
+        "h": 8,
+        "w": 5,
+        "x": 19,
         "y": 0
       },
       "id": 9,
@@ -530,10 +530,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 9,
+        "h": 7,
         "w": 6,
         "x": 0,
-        "y": 9
+        "y": 8
       },
       "id": 11,
       "options": {
@@ -616,10 +616,12 @@
               "mode": "none"
             },
             "thresholdsStyle": {
-              "mode": "off"
+              "mode": "line"
             }
           },
           "mappings": [],
+          "max": 140,
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -629,20 +631,21 @@
               },
               {
                 "color": "red",
-                "value": 80
+                "value": 100
               }
             ]
-          }
+          },
+          "unit": "percent"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 9,
+        "h": 7,
         "w": 6,
         "x": 6,
-        "y": 9
+        "y": 8
       },
-      "id": 12,
+      "id": 13,
       "options": {
         "legend": {
           "calcs": [],
@@ -662,12 +665,11 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum(consumer_load_gauge{job=\"app-server\"})",
-          "hide": false,
+          "expr": "avg(rate(container_cpu_usage_seconds_total{image=\"horz-scaled-app-reverseproxy\"}[1m])) by (name) * 100",
           "instant": false,
-          "legendFormat": "Messages on Queue",
+          "legendFormat": "Reverse Proxy % CPU Usage",
           "range": true,
-          "refId": "B"
+          "refId": "A"
         },
         {
           "datasource": {
@@ -675,15 +677,15 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum(abs(consumer_load_gauge{job=\"consumer\"}))",
+          "expr": "sum((container_memory_usage_bytes{image=\"horz-scaled-app-reverseproxy\"} / container_spec_memory_limit_bytes{image=\"horz-scaled-app-reverseproxy\"})) by (name) * 100",
           "hide": false,
           "instant": false,
-          "legendFormat": "Messages consumed from Queue",
+          "legendFormat": "Reverse Proxy % Mem Usage",
           "range": true,
-          "refId": "A"
+          "refId": "B"
         }
       ],
-      "title": "Consumption Performance",
+      "title": "Reverse Proxy Resource Usage",
       "type": "timeseries"
     },
     {
@@ -701,27 +703,16 @@
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
+            "fillOpacity": 80,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
             "lineWidth": 1,
-            "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "normal"
             },
             "thresholdsStyle": {
               "mode": "off"
@@ -746,23 +737,32 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 9,
+        "h": 7,
         "w": 6,
         "x": 12,
-        "y": 9
+        "y": 8
       },
       "id": 14,
       "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
         "legend": {
           "calcs": [],
           "displayMode": "list",
           "placement": "bottom",
           "showLegend": true
         },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
         "tooltip": {
           "mode": "single",
           "sort": "none"
-        }
+        },
+        "xTickLabelRotation": -90,
+        "xTickLabelSpacing": 0
       },
       "targets": [
         {
@@ -771,7 +771,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum(rate(app_server_histogram_request_duration_seconds_count{route!=\"/metrics\"}[1m])) by (host)",
+          "expr": "sum(rate(app_server_histogram_request_duration_seconds_count{route!=\"/metrics\"}[2s]))",
           "hide": false,
           "instant": false,
           "legendFormat": "RPS {{host}}",
@@ -780,7 +780,7 @@
         }
       ],
       "title": "App Server RPS (Host)",
-      "type": "timeseries"
+      "type": "barchart"
     },
     {
       "datasource": {
@@ -843,10 +843,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 9,
+        "h": 7,
         "w": 6,
         "x": 18,
-        "y": 9
+        "y": 8
       },
       "id": 7,
       "options": {
@@ -869,7 +869,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "histogram_quantile(0.9, sum(rate(app_server_histogram_request_duration_seconds_bucket{route!=\"/metrics\"}[1m])) by (le, host))",
+          "expr": "histogram_quantile(0.9, sum(rate(app_server_histogram_request_duration_seconds_bucket{route!=\"/metrics\"}[1m])) by (le))",
           "instant": false,
           "legendFormat": "P90 {{host}} ",
           "range": true,
@@ -917,12 +917,10 @@
               "mode": "none"
             },
             "thresholdsStyle": {
-              "mode": "line"
+              "mode": "off"
             }
           },
           "mappings": [],
-          "max": 140,
-          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -932,21 +930,20 @@
               },
               {
                 "color": "red",
-                "value": 100
+                "value": 80
               }
             ]
-          },
-          "unit": "percent"
+          }
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 9,
+        "h": 7,
         "w": 6,
         "x": 0,
-        "y": 18
+        "y": 15
       },
-      "id": 13,
+      "id": 12,
       "options": {
         "legend": {
           "calcs": [],
@@ -966,11 +963,12 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "avg(rate(container_cpu_usage_seconds_total{image=\"horz-scaled-app-reverseproxy\"}[1m])) by (name) * 100",
+          "expr": "sum(consumer_load_gauge{job=\"app-server\"})",
+          "hide": false,
           "instant": false,
-          "legendFormat": "Reverse Proxy % CPU Usage",
+          "legendFormat": "Messages on Queue",
           "range": true,
-          "refId": "A"
+          "refId": "B"
         },
         {
           "datasource": {
@@ -978,15 +976,15 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum((container_memory_usage_bytes{image=\"horz-scaled-app-reverseproxy\"} / container_spec_memory_limit_bytes{image=\"horz-scaled-app-reverseproxy\"})) by (name) * 100",
+          "expr": "sum(abs(consumer_load_gauge{job=\"consumer\"}))",
           "hide": false,
           "instant": false,
-          "legendFormat": "Reverse Proxy % Mem Usage",
+          "legendFormat": "Messages consumed from Queue",
           "range": true,
-          "refId": "B"
+          "refId": "A"
         }
       ],
-      "title": "Reverse Proxy Resource Usage",
+      "title": "Consumption Performance",
       "type": "timeseries"
     },
     {
@@ -1014,10 +1012,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 9,
+        "h": 7,
         "w": 6,
         "x": 6,
-        "y": 18
+        "y": 15
       },
       "id": 15,
       "options": {
@@ -1034,7 +1032,7 @@
         },
         "textMode": "auto"
       },
-      "pluginVersion": "10.1.2",
+      "pluginVersion": "10.1.4",
       "targets": [
         {
           "datasource": {
@@ -1065,6 +1063,169 @@
       ],
       "title": "Consumption Performance",
       "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 6,
+        "x": 12,
+        "y": 15
+      },
+      "id": 16,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum(cache_hit_rate) / sum(app_server_histogram_request_duration_seconds_count{route!=\"/metrics\"})",
+          "instant": false,
+          "legendFormat": "% Cache Hit Rate",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Cache Hit Rate",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 6,
+        "x": 18,
+        "y": 15
+      },
+      "id": 17,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "10.1.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "sum(app_server_histogram_request_duration_seconds_count{route!=\"/metrics\"})",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "RPS {{host}}",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "No Requests",
+      "type": "stat"
     }
   ],
   "refresh": "",
@@ -1075,7 +1236,7 @@
     "list": []
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {},
