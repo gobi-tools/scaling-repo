@@ -109,14 +109,15 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "avg(rate(container_cpu_usage_seconds_total{image=\"simple-app_app-server\"}[1m])) by (name) * 100",
+          "expr": "avg(rate(container_cpu_usage_seconds_total{image=\"simple-app-app-server\"}[1m])) * 100",
+          "hide": false,
           "instant": false,
-          "legendFormat": "App Server % CPU Usage",
+          "legendFormat": "% CPU Usage",
           "range": true,
-          "refId": "A"
+          "refId": "B"
         }
       ],
-      "title": "% CPU Usage",
+      "title": "App Server % CPU Usage",
       "type": "timeseries"
     },
     {
@@ -209,14 +210,14 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum((container_memory_usage_bytes{image=\"simple-app_app-server\"} / container_spec_memory_limit_bytes{image=\"simple-app_app-server\"})) by (name) * 100",
+          "expr": "sum((container_memory_usage_bytes{image=\"simple-app-app-server\"} / container_spec_memory_limit_bytes{image=\"simple-app-app-server\"})) by (name) * 100",
           "instant": false,
-          "legendFormat": "App Server % Memory Usage",
+          "legendFormat": "% Memory Usage",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "% Memory Usage",
+      "title": "App Server % Memory Usage",
       "type": "timeseries"
     },
     {
@@ -234,27 +235,16 @@
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
+            "fillOpacity": 80,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
               "viz": false
             },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
             "lineWidth": 1,
-            "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
             },
             "thresholdsStyle": {
               "mode": "off"
@@ -286,16 +276,25 @@
       },
       "id": 5,
       "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
         "legend": {
           "calcs": [],
           "displayMode": "list",
           "placement": "bottom",
           "showLegend": true
         },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
         "tooltip": {
           "mode": "single",
           "sort": "none"
-        }
+        },
+        "xTickLabelRotation": -45,
+        "xTickLabelSpacing": 100
       },
       "targets": [
         {
@@ -304,15 +303,15 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "sum(rate(app_server_histogram_request_duration_seconds_count{route!=\"/metrics\"}[1m])) by (route)",
+          "expr": "sum(rate(app_server_histogram_request_duration_seconds_count{route!=\"/metrics\"}[2s]))",
           "instant": false,
-          "legendFormat": "App Server RPS",
+          "legendFormat": "RPS",
           "range": true,
           "refId": "A"
         }
       ],
       "title": "RPS",
-      "type": "timeseries"
+      "type": "barchart"
     },
     {
       "datasource": {
@@ -400,7 +399,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.9, sum(rate(app_server_histogram_request_duration_seconds_bucket{route!=\"/metrics\"}[1m])) by (le))",
+          "expr": "histogram_quantile(0.9, sum(rate(app_server_histogram_request_duration_seconds_bucket{route!=\"/metrics\"}[2s])) by (le))",
           "instant": false,
           "legendFormat": "P90",
           "range": true,
@@ -419,7 +418,7 @@
     "list": []
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},
