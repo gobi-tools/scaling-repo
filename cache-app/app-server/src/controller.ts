@@ -3,7 +3,7 @@ import { Result, dataSource } from './database';
 import { cache } from './cache';
 
 export const flipsController = async (req, res) => {
-  const flips = req.query.flips ?? 1;
+  const flips = req.body.flips ?? 1;
 
   // figure out cache situation
   const key = `flips-${flips}`;
