@@ -1,6 +1,7 @@
 import { v4 as uuid } from 'uuid';
 import { Result, dataSource } from './database';
 import { cache } from './cache';
+import { cacheHitRate } from './monitoring';
 
 export const flipsController = async (req, res) => {
   const flips = req.body.flips ?? 1;
@@ -10,6 +11,7 @@ export const flipsController = async (req, res) => {
   const cacheValue = await cache.get(key);
 
   if (cacheValue) {
+    cacheHitRate.inc();
     const result = JSON.parse(cacheValue);
     res.status(200).json({ success: true, result });
   } else {

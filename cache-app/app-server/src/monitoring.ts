@@ -14,6 +14,12 @@ const requestDurationHistogram = new client.Histogram({
 });
 register.registerMetric(requestDurationHistogram);
 
+export const cacheHitRate = new client.Counter({
+  name: 'cache_hit_rate',
+  help: 'Cache hit rate',
+});
+register.registerMetric(cacheHitRate);
+
 register.setDefaultLabels({ app: 'app-server' });
 
 client.collectDefaultMetrics({ register });
