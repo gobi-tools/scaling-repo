@@ -5,8 +5,26 @@ import { Result, dataSource } from './database';
 import { cache } from './cache';
 import { consumerLoadGauge, metricsEndpoint } from './monitoring';
 
+import workerpool from 'workerpool';
+const pool = workerpool.pool(); 
+
 const PORT = 7000;
 const app = express();
+
+const consumeMessage = (id: string, flips: number) => {
+  // calc result
+  let heads = 0, tails = 0;
+  for (let i = 0; i < flips; i++) {
+    const value = Math.random();
+    if (value < 0.5) {
+      heads += 1;
+    } else {
+      tails += 1;
+    }
+  }
+
+  return { id, flips, heads, tails };
+};
 
 (async function () {
   await dataSource.initialize();
@@ -15,31 +33,21 @@ const app = express();
   
   await queue.consume(async (data) => {
     const { id, flips } = data;
-    console.log('Consuming', id, flips);
+    console.log('[Consumer] Start', id, flips);
     
-    // calc result
-    let heads = 0, tails = 0;
-    for (let i = 0; i < flips; i++) {
-      const value = Math.random();
-      if (value < 0.5) {
-        heads += 1;
-      } else {
-        tails += 1;
-      }
-    }
+    pool.exec(consumeMessage, [id, flips])
+    .then(async (result) => {
+      const entity = dataSource.manager.create(Result, result);
+      await dataSource.manager.save(entity);
+      await cache.set(flips, result);
+      consumerLoadGauge.dec();
+      console.log('[Thread] Finished for', id);
+    })
+    .catch(error => {
+      //
+    });
 
-    // form final result
-    const result = { id, flips, heads, tails };
-
-    // save to DB
-    const entity = dataSource.manager.create(Result, result);
-    await dataSource.manager.save(entity);
-
-    // save to Cache
-    await cache.set(flips, result);
-
-    // decrement gauge
-    consumerLoadGauge.dec();
+    // console.log('Consumer] Finished', id);
   });
 })();
 
