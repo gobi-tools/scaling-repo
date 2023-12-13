@@ -4,17 +4,16 @@ import { sleep } from 'k6';
 export const options = {
   discardResponseBodies: true,
   // stages: [
-  //   { duration: '2m', target: 600 },
-  //   { duration: '2m', target: 600 },
+  //   { duration: '2m', target: 100 },
   // ],
   scenarios: {
     constant_request_rate: {
       executor: 'constant-arrival-rate',
-      rate: 4000,
+      rate: 250,
       timeUnit: '1s',
-      duration: '30s',
-      preAllocatedVUs: 500,
-      maxVUs: 4000,
+      duration: '1m',
+      preAllocatedVUs: 80,
+      maxVUs: 800,
     },
   },
 }
@@ -25,7 +24,8 @@ export default function () {
   const payload = JSON.stringify({ flips, dateTarget });
   const headers = { headers: { 'Content-Type': 'application/json' }, };
   http.post(`http://localhost/flips`, payload, headers);
-  sleep(1);
+  // sleep(1);
+  // sleep(1 / 4);
 }
 
 function randomIntFromInterval(min, max) { // min and max included 

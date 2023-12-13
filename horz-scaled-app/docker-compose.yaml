@@ -27,7 +27,7 @@ services:
       - PORT=3000
       - APP_NAME=app-server-1
     cpus: '1.0'
-    mem_limit: 500m
+    mem_limit: 1Gb
     restart: always
     depends_on:
       - db
@@ -88,23 +88,23 @@ services:
       - PORT=7001
       - APP_NAME=consumer-2
 
-  consumer-3: 
-    <<: *consumer-template
-    container_name: consumer-3
-    ports:
-      - 7002:7002
-    environment:
-      - PORT=7002
-      - APP_NAME=consumer-3
+  # consumer-3: 
+  #   <<: *consumer-template
+  #   container_name: consumer-3
+  #   ports:
+  #     - 7002:7002
+  #   environment:
+  #     - PORT=7002
+  #     - APP_NAME=consumer-3
   
-  consumer-4: 
-    <<: *consumer-template
-    container_name: consumer-4
-    ports:
-      - 7003:7003
-    environment:
-      - PORT=7003
-      - APP_NAME=consumer-4
+  # consumer-4: 
+  #   <<: *consumer-template
+  #   container_name: consumer-4
+  #   ports:
+  #     - 7003:7003
+  #   environment:
+  #     - PORT=7003
+  #     - APP_NAME=consumer-4
 
   db:
     container_name: crud-db
@@ -172,6 +172,15 @@ services:
       - 8080:8080
     # depends_on:
     #   - app-server
+
+  nginx-prometheus-exporter:
+    container_name: nginx-prometheus-exporter
+    image: nginx/nginx-prometheus-exporter:latest
+    ports:
+      - "9113:9113"
+    command:
+      -nginx.scrape-uri=http://reverseproxy:80/metrics
+      -web.telemetry-path=/metrics
 
   prometheus:
     image: prom/prometheus:latest

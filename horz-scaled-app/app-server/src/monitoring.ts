@@ -1,4 +1,18 @@
 import client from 'prom-client';
+import moment from 'moment';
+
+const buckets = {};
+
+export const addToBucket = (dateTarget: Date) => {
+  const date = dateTarget ?? new Date();
+  const formattedDate = moment(date).format('YYYY-MM-DD HH:mm:ss');
+
+  if (!buckets[formattedDate]) {
+    buckets[formattedDate] = 1;
+  } else {
+    buckets[formattedDate] = buckets[formattedDate] + 1;
+  }
+};
 
 export const register = new client.Registry();
 
@@ -35,6 +49,9 @@ export function metricsMiddlewareWithHost(host: string) {
   return (req, res, next) => {
     const end = requestDurationHistogram.startTimer();
     res.on('finish', () => {
+      // if (!req.originalUrl.includes('/metrics') && !req.originalUrl.includes('/stats')) {
+      //   addToBucket(req.body.dateTarget);
+      // }
       end({method: req.method, route: req.originalUrl, host, });
     });
     next();
@@ -44,4 +61,8 @@ export function metricsMiddlewareWithHost(host: string) {
 export const metricsEndpoint = async (request, response) => {
   response.setHeader('Content-type', register.contentType);
   response.end(await register.metrics());
+};
+
+export const bucketsEndpoint = async (request, response) => {
+  response.status(200).json(buckets);
 };

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<body>
+
+<canvas id="myChart" style="width:100%;max-width:1000px"></canvas>
+
+<script>
+
+async function fetchAsync (url) {
+  let response = await fetch(url);
+  let data = await response.json();
+  return data;
+}
+
+(async () => {
+  const url1 = 'http://localhost:3000/buckets';
+  const url2 = 'http://localhost:3001/buckets';
+  const url3 = 'http://localhost:3002/buckets';
+  const url4 = 'http://localhost:3003/buckets';
+
+  const result1 = await fetchAsync(url1);
+  const result2 = await fetchAsync(url2);
+  const result3 = await fetchAsync(url3);
+  const result4 = await fetchAsync(url4);
+
+  const xAxis = [...new Set([...Object.keys(result1), ...Object.keys(result2), ...Object.keys(result3), ...Object.keys(result4)])];
+  let yAxis = [];
+
+  for (const x of xAxis) {
+    let value = 0;
+    if (result1[x]) {
+      value += result1[x];
+    }
+    if (result2[x]) {
+      value += result2[x];
+    }
+    if (result3[x]) {
+      value += result3[x];
+    }
+    if (result4[x]) {
+      value += result4[x];
+    }
+    yAxis.push(value);
+  }
+
+  console.log(xAxis);
+  console.log(yAxis);
+
+  new Chart("myChart", {
+    type: "bar",
+    data: {
+      labels: xAxis,
+      datasets: [{
+        data: yAxis
+      }]
+    },
+    options: {
+      legend: {display: false},
+      title: {
+        display: true,
+        text: "Stats"
+      }
+    }
+  });
+})();
+
+</script>
+
+</body>
+</html>

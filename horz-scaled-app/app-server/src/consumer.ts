@@ -16,7 +16,7 @@ const app = express();
 
   await queue.consume(async (data) => {
     const { id, flips } = data;
-    console.log('Consuming', id, flips);
+    // console.log('Consuming', id, flips);
     
     // calc result
     let heads = 0, tails = 0;

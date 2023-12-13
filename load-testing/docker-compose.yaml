@@ -1,0 +1,47 @@
+version: '3.2'
+services:
+  load-tester-1: &load-tester-template
+    container_name: load-tester-1
+    build:
+      context: .
+      dockerfile: 'Dockerfile'
+    cpus: '1.0'
+    mem_limit: 1Gb
+    restart: always
+    network_mode: host
+    
+  load-tester-2:
+    <<: *load-tester-template
+    container_name: load-tester-2
+
+  load-tester-3:
+    <<: *load-tester-template
+    container_name: load-tester-3
+
+  load-tester-4:
+    <<: *load-tester-template
+    container_name: load-tester-4
+  
+  load-tester-5:
+    <<: *load-tester-template
+    container_name: load-tester-5
+
+  load-tester-6:
+    <<: *load-tester-template
+    container_name: load-tester-6
+
+  load-tester-7:
+    <<: *load-tester-template
+    container_name: load-tester-7
+
+  load-tester-8:
+    <<: *load-tester-template
+    container_name: load-tester-8
+
+  load-tester-9:
+    <<: *load-tester-template
+    container_name: load-tester-9
+
+  load-tester-10:
+    <<: *load-tester-template
+    container_name: load-tester-10

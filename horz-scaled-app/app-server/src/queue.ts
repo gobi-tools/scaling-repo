@@ -22,7 +22,7 @@ export class Queue {
 
     const message = JSON.stringify(data);
     this.channel.sendToQueue(QUEUE_NAME, Buffer.from(message));
-    console.log(" [x] Sent message", message);
+    // console.log(" [x] Sent message", message);
   }
 
   async consume(callback: (data: any) => void) {
